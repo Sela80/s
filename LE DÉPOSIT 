@@ -1,0 +1,619 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "private_outputs": true,
+      "provenance": [],
+      "authorship_tag": "ABX9TyNLsjQUs2rJV4exvzKQIKpD",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/Sela80/s/blob/main/LE%20D%C3%89POSIT%20\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#Importation des librairies nécessaires"
+      ],
+      "metadata": {
+        "id": "HLGf4PFETgcg"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import pandas as pd\n",
+        "import numpy as np\n",
+        "import matplotlib.pyplot as plt\n",
+        "import seaborn as sns\n",
+        "import plotly.express as px\n",
+        "import plotly.graph_objects as go\n",
+        "from plotly.subplots import make_subplots\n",
+        "import plotly.io as pio\n"
+      ],
+      "metadata": {
+        "id": "Jxmj-8fuTpg7"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#Lire notre ensemble de données"
+      ],
+      "metadata": {
+        "id": "_LeOAn1PT6Vm"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "data= pd.read_csv('/content/bank.csv',sep=\";\")\n",
+        "data.head()"
+      ],
+      "metadata": {
+        "id": "QKLBfiFZUAt3"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# remplacement de la colonne \"y\" par \"déposit\"\n",
+        "\n",
+        "data.rename(columns={\"y\": \"deposit\"}, inplace=True)\n",
+        "data.head()\n"
+      ],
+      "metadata": {
+        "id": "xkmYkgIj2MtX"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#Analyse exploitation ou le Data Mining"
+      ],
+      "metadata": {
+        "id": "5AeGoODb1QYa"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# information sur le dataset\n",
+        "data.info()"
+      ],
+      "metadata": {
+        "id": "CPQaP37KViDH"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Verification des valeurs manquantes\n",
+        "\n",
+        "data.isnull().sum()"
+      ],
+      "metadata": {
+        "id": "ZGVc3eLzVpMO"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Vérification des doublons\n",
+        "data.duplicated().sum()"
+      ],
+      "metadata": {
+        "id": "h6_p7GWS1zus"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Description statistique\n",
+        "\n",
+        "data.describe()"
+      ],
+      "metadata": {
+        "id": "b9gofkAnVwQ-"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Voyons nos colonnes\n",
+        "data.columns"
+      ],
+      "metadata": {
+        "id": "INAOK50eWCW_"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "# Visualisation"
+      ],
+      "metadata": {
+        "id": "ykeNCwFBWkFe"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        " Verifions si l'âge du client a un impact sur l'effectuation d'un dépôt"
+      ],
+      "metadata": {
+        "id": "02uNCHbLW4Ve"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Une distribution de Distribution_age avec px\n",
+        "Distribution_age = data.groupby('age')['deposit'].value_counts().reset_index(name='count')\n",
+        "fig = px.histogram(Distribution_age, x=\"age\", y=\"count\", color=\"deposit\",\n",
+        "                 title=\"Distribution of Deposit by Age\",barmode=\"group\",\n",
+        "                 labels={\"age\": \"Age\", \"count\": \"Number of Customers\", \"depot\": \"Deposit\"})\n",
+        "fig.show()"
+      ],
+      "metadata": {
+        "id": "ewzu6_7wWixX"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "\n",
+        "#  cet histogramme  visualise la répartition des dépôts entre différents groupes d'âge.\n",
+        "\n",
+        "# L'axe des x représente l'âge des clients, tandis que l'axe des y montre le nombre de clients pour chaque tranche d'âge.\n",
+        "\n",
+        "# La couleur de chaque barre indique si le client a effectué un dépôt ou non.\n",
+        "\n",
+        "# Sur la base du graphique, nous pouvons observer ce qui suit :\n",
+        "\n",
+        "# - Il y a plus de clients dans les tranches d'âge plus jeunes (18-25 ans) que dans les tranches d'âge plus âgées (65+).\n",
+        "# - La majorité des clients de tous âges n’ont pas effectué de dépôt.\n",
+        "# - Le plus grand nombre de dépôts a été effectué par des clients âgés de 25 à 35 ans.\n",
+        "# - Le nombre de dépôts diminue à mesure que l'âge des clients augmente.\n",
+        "# Voyons l'impact du poste d'occupation sur l'effectuation d'un dépôt"
+      ],
+      "metadata": {
+        "id": "oyLf9Zew35m4"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Distribution de Distribution_by_job  avec px\n",
+        "Distribution_by_job = data.groupby('job')['deposit'].value_counts().reset_index(name='count')\n",
+        "fig = px.histogram(Distribution_by_job, x=\"job\", y=\"count\", color=\"deposit\",\n",
+        "                 title=\"Distribution of Deposit by Occupation\",barmode=\"group\",\n",
+        "                 labels={\"Occupation\": \"Occupation Title\", \"count\": \"Number of Customers\", \"deposit\": \"Deposit\"})\n",
+        "fig.show()\n"
+      ],
+      "metadata": {
+        "id": "xif6SK9yaahi"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "# prompt : comment bien ce graphique ci-dessus\n",
+        "\n",
+        "# L'histogramme montre le nombre de clients pour chaque combinaison d'occupation et de statut de dépôt (\"oui\" ou \"non\").\n",
+        "\n",
+        "# L'axe des x représente la profession du client, tandis que l'axe des y représente le nombre de clients.\n",
+        "\n",
+        "# La couleur de chaque barre correspond au statut du dépôt, les barres bleues représentant les clients ayant effectué un dépôt et les barres orange représentant les clients qui ne l'ont pas fait.\n",
+        "\n",
+        "# Le titre de l'histogramme est \"Répartition des dépôts par profession\".\n",
+        "\n",
+        "# Sur la base de cet histogramme, nous pouvons observer ce qui suit :\n",
+        "\n",
+        "# - Il y a plus de clients dans les catégories professionnelles « cols bleus », «management» et « techniciens » que dans les autres catégories.\n",
+        "# - La majorité des clients, toutes professions confondues, n'ont pas effectué de dépôt.\n",
+        "# - La proportion de clients ayant effectué un dépôt est légèrement plus élevée dans les catégories professionnelles « cadres » et « retraités » que dans les autres catégories.\n",
+        "# - On constate une baisse significative du nombre de clients ayant effectué un dépôt dans les catégories professionnelles « étudiants » et « chômeurs ».\n",
+        "\n",
+        "# Ces informations pourraient être utiles à la banque pour comprendre le comportement de dépôt des clients dans différentes professions et pour adapter ses stratégies marketing en conséquence.\n"
+      ],
+      "metadata": {
+        "id": "SBwsiX-og2vQ"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# prompt:  Distribution de la colonne \"Sold\" en fonction de la valeur cible \"depot\" avec pie\n",
+        "\n",
+        "fig = px.pie(data, values='balance', names='deposit', title='Distribution of Balance by Deposit')\n",
+        "fig.show()\n"
+      ],
+      "metadata": {
+        "id": "0uUKG95ul2Tt"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "# invite : commenter ce graphique ci-dessus\n",
+        "\n",
+        "# Le diagramme circulaire montre la répartition du solde entre les clients qui ont effectué un dépôt et ceux qui ne l'ont pas fait.\n",
+        "\n",
+        "# Le diagramme circulaire est divisé en deux tranches, une pour les clients qui ont effectué un dépôt (bleu) et une pour ceux qui ne l'ont pas fait (orange).\n",
+        "\n",
+        "# La taille de chaque tranche est proportionnelle au solde total des clients de cette catégorie.\n",
+        "\n",
+        "# Le titre du diagramme circulaire est « Répartition du solde par dépôt ».\n",
+        "\n",
+        "# Sur la base de ce diagramme circulaire, nous pouvons observer ce qui suit :\n",
+        "\n",
+        "# - Les clients qui ont effectué un dépôt ont un solde moyen légèrement plus élevé que ceux qui ne l'ont pas fait.\n",
+        "# - La majorité des clients, qu'ils aient effectué ou non un dépôt, ont un solde inférieur à 100 000.\n",
+        "# - Il existe un petit nombre de clients avec des soldes très élevés (supérieurs à 500 000) dans les deux catégories.\n",
+        "\n",
+        "# Ces informations pourraient être utiles à la banque pour comprendre les habitudes de dépenses de ses clients et développer des campagnes marketing ciblées. Par exemple, la banque pourrait proposer des promotions spéciales aux clients ayant des soldes élevés ou à ceux qui n’ont pas encore effectué de dépôt."
+      ],
+      "metadata": {
+        "id": "AyPgLrv1mwNu"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "#  L'histogramme montre que la majorité des clients ayant un solde inférieur à  1000 n'ont pas effectué de dépôt. Cependant, la proportion de clients ayant effectué un dépôt augmente progressivement avec l'augmentation du solde. Les clients ayant un solde supérieur à 10 000 sont plus susceptibles d'effectuer un dépôt.\n"
+      ],
+      "metadata": {
+        "id": "wVBc3CWbmO-E"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Distribution de la colonne \"housing\" en fonction de la valeur cible \"depot\"\n",
+        "Distribution_housing = data.groupby('housing')['deposit'].value_counts().reset_index(name='count')\n",
+        "fig = px.histogram(Distribution_housing, x=\"housing\", y=\"count\", color=\"deposit\",\n",
+        "                 title=\"Distribution of Deposit by Housing Status\",barmode=\"group\",\n",
+        "                 labels={\"housing\": \"Housing Status\", \"count\": \"Number of Customers\", \"depot\": \"Deposit\"})\n",
+        "fig.show()\n"
+      ],
+      "metadata": {
+        "id": "Vso_oGPpm6MC"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "# L'histogramme montre que les clients ayant un logement sont plus susceptibles d'effectuer un dépôt que ceux qui n'en ont pas. Cela pourrait être dû au fait que les clients ayant un logement sont plus susceptibles d'avoir un revenu stable et une situation financière plus stable.\n"
+      ],
+      "metadata": {
+        "id": "UCdqr43zm-HS"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Distribution de la colonne \"loan\" en fonction de la valeur cible \"depot\"\n",
+        "Distribution_loan = data.groupby('loan')['deposit'].value_counts().reset_index(name='count')\n",
+        "fig = px.histogram(Distribution_loan, x=\"loan\", y=\"count\", color=\"deposit\",\n",
+        "                 title=\"Distribution of Deposit by Loan Status\",barmode=\"group\",\n",
+        "                 labels={\"loan\": \"Loan Status\", \"count\": \"Number of Customers\", \"depot\": \"Deposit\"})\n",
+        "fig.show()"
+      ],
+      "metadata": {
+        "id": "p1gpJFkBnlry"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "# Commentaire :\n",
+        "# L'histogramme montre que les clients ayant un prêt sont moins susceptibles d'effectuer un dépôt que ceux qui n'en ont pas. Cela pourrait être dû au fait que les clients ayant un prêt ont des obligations financières supplémentaires qui peuvent les empêcher d'épargner."
+      ],
+      "metadata": {
+        "id": "93V2-AuLnupq"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Distribution de la colonne \"contact\" en fonction de la valeur cible \"depot\"\n",
+        "Distribution_contact = data.groupby('contact')['deposit'].value_counts().reset_index(name='count')\n",
+        "fig = px.histogram(Distribution_contact, x=\"contact\", y=\"count\", color=\"deposit\",\n",
+        "                 title=\"Distribution of Deposit by Contact Type\",barmode=\"group\",\n",
+        "                 labels={\"contact\": \"Contact Type\", \"count\": \"Number of Customers\", \"deposit\": \"Deposit\"})\n",
+        "fig.show()"
+      ],
+      "metadata": {
+        "id": "JMclAcnloMBa"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "# Commentaire :\n",
+        "\n",
+        "# L'histogramme montre que les clients contactés par cellulaire sont plus susceptibles d'effectuer un dépôt que ceux qui sont contactés par d'autres moyens. Cela pourrait être dû au fait que le contact cellulaire permet un échange plus personnalisé et peut aider à établir une relation de confiance entre le client et la banque."
+      ],
+      "metadata": {
+        "id": "RMjGqLtxoPYL"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Distribution de la colonne \"day\" en fonction de la valeur cible \"depot\"\n",
+        "Distribution_day = data.groupby('day')['deposit'].value_counts().reset_index(name='count')\n",
+        "fig = px.histogram(Distribution_day, x=\"day\", y=\"count\", color=\"deposit\",\n",
+        "                 title=\"Distribution of Deposit by Day of Month\",barmode=\"group\",\n",
+        "                 labels={\"day\": \"Day of Month\", \"count\": \"Number of Customers\", \"depot\": \"Deposit\"})\n",
+        "fig.show()"
+      ],
+      "metadata": {
+        "id": "ppJYaWUaohTS"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "# Commentaire :\n",
+        "# L'histogramme montre que la distribution des dépôts est relativement uniforme tout au long du mois. Cependant, il y a une légère augmentation du nombre de dépôts effectués en fin de mois. Cela pourrait être dû au fait que les clients sont plus susceptibles de recevoir leur salaire en fin de mois et peuvent donc être plus susceptibles d'effectuer un dépôt à ce moment-là."
+      ],
+      "metadata": {
+        "id": "OoT_UrLnorrq"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Distribution de la colonne \"month\" en fonction de la valeur cible \"depot\"\n",
+        "Distribution_month = data.groupby('month')['deposit'].value_counts().reset_index(name='count')\n",
+        "fig = px.histogram(Distribution_month, x=\"month\", y=\"count\", color=\"deposit\",\n",
+        "                 title=\"Distribution of Deposit by Month of Year\",barmode=\"group\",\n",
+        "                 labels={\"month\": \"Month of Year\", \"count\": \"Number of Customers\", \"depot\": \"Deposit\"})\n",
+        "fig.show()\n"
+      ],
+      "metadata": {
+        "id": "-MZkvuYHozSz"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "# Commentaire :\n",
+        "# L'histogramme montre que la distribution des dépôts est relativement uniforme tout au long de l'année. Cependant, il y a une légère augmentation du nombre de dépôts effectués en fin d'année. Cela pourrait être dû au fait que les clients sont plus susceptibles de recevoir des bonus ou des primes de fin d'année et peuvent donc être plus susceptibles d'effectuer un dépôt à ce moment-là.\n"
+      ],
+      "metadata": {
+        "id": "AOaPmXC7o7Wa"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Distribution de la colonne \"duration\" en fonction de la valeur cible \"depot\"\n",
+        "\n",
+        "fig = px.pie(data, values='duration', names='deposit', title='Distribution of Call Duration by Deposit') # Changed 'duree' to 'Duree'\n",
+        "fig.show()"
+      ],
+      "metadata": {
+        "id": "UzKwd5e3yRHo"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "\n",
+        "# Le diagramme circulaire montre la répartition de la durée d'appel entre les clients qui ont effectué un dépôt et ceux qui ne l'ont pas fait.\n",
+        "\n",
+        "# Le diagramme circulaire est divisé en deux tranches, une pour les clients qui ont effectué un dépôt (bleu) et une pour ceux qui ne l'ont pas fait (orange).\n",
+        "\n",
+        "# La taille de chaque tranche est proportionnelle à la durée totale de l'appel pour les clients de cette catégorie.\n",
+        "\n",
+        "# Le titre du diagramme circulaire est \"Répartition de la durée des appels par dépôt\".\n",
+        "\n",
+        "# Sur la base de ce diagramme circulaire, nous pouvons observer ce qui suit :\n",
+        "\n",
+        "# - Les clients qui ont effectué un dépôt ont eu des durées d'appel moyennes légèrement plus longues que ceux qui ne l'ont pas fait.\n",
+        "# - La majorité des clients, qu'ils aient ou non effectué un dépôt, ont eu des durées d'appel inférieures à 5 minutes.\n",
+        "# - Il y avait un petit nombre de clients avec des durées d'appel très longues (plus de 20 minutes) dans les deux catégories.\n",
+        "\n",
+        "# Ces informations pourraient être utiles à la banque pour comprendre le comportement d'appel de ses clients et développer des campagnes marketing ciblées. Par exemple, la banque pourrait proposer des promotions spéciales aux clients qui ont des durées d’appel plus longues ou à ceux qui n’ont pas effectué de dépôt récemment."
+      ],
+      "metadata": {
+        "id": "nTQvqCS12dgt"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Distribution de la colonne \"campaign\" en fonction de la valeur cible \"depot\"\n",
+        "Distribution_campaign = data.groupby('campaign')['deposit'].value_counts().reset_index(name='count')\n",
+        "fig = px.histogram(Distribution_campaign, x=\"campaign\", y=\"count\", color=\"deposit\",\n",
+        "                 title=\"Distribution of Deposit by Number of Contacts\",barmode=\"group\",\n",
+        "                 labels={\"campaign\": \"Number of Contacts\", \"count\": \"Number of Customers\", \"deposit\": \"Deposit\"})\n",
+        "fig.show()"
+      ],
+      "metadata": {
+        "id": "sjjXvosc0geQ"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "# Commentaire :\n",
+        "# L'histogramme montre que la distribution des dépôts est relativement uniforme pour tous les nombres de contacts. Cependant, il y a une légère augmentation du nombre de dépôts effectués pour les clients qui ont été contactés plus souvent. Cela pourrait être dû au fait que les clients qui sont contactés plus souvent par la banque sont plus susceptibles d'être intéressés par les produits et services de la banque et donc plus susceptibles d'effectuer un dépôt.\n"
+      ],
+      "metadata": {
+        "id": "iZhp00aQ0leH"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "data.columns"
+      ],
+      "metadata": {
+        "id": "jVcrKSza8hPh"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Distribution de la colonne \"pdays\" en fonction de la valeur cible \"depot\"\n",
+        "Distribution_pdays = data.groupby('pdays')['deposit'].value_counts().reset_index(name='count')\n",
+        "fig = px.histogram(Distribution_pdays, x=\"pdays\", y=\"count\", color=\"deposit\",\n",
+        "                 title=\"Distribution of Deposit by Number of Days Since Last Contact\",barmode=\"group\",\n",
+        "                 labels={\"pdays\": \"Number of Days Since Last Contact\", \"count\": \"Number of Customers\", \"deposit\": \"Deposit\"})\n",
+        "fig.show()"
+      ],
+      "metadata": {
+        "id": "PfAf0Rp82p6e"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "# Commentaire :\n",
+        "# L'histogramme montre que la distribution des dépôts est relativement uniforme pour tous les nombres de jours depuis le dernier contact. Cependant, il y a une légère augmentation du nombre de dépôts effectués pour les clients qui n'ont pas été contactés depuis longtemps. Cela pourrait être dû au fait que les clients qui n'ont pas été contactés depuis longtemps sont plus susceptibles d'être intéressés par les produits et services de la banque et donc plus susceptibles d'effectuer un dépôt.\n"
+      ],
+      "metadata": {
+        "id": "13dtEZGw88CT"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Distribution de la colonne \"previous\" en fonction de la valeur cible \"depot\"\n",
+        "Distribution_previous = data.groupby('previous')['deposit'].value_counts().reset_index(name='count')\n",
+        "fig = px.histogram(Distribution_previous, x=\"previous\", y=\"count\", color=\"deposit\",\n",
+        "                 title=\"Distribution of Deposit by Number of Previous Contacts\",barmode=\"group\",\n",
+        "                 labels={\"previous\": \"Number of Previous Contacts\", \"count\": \"Number of Customers\", \"depot\": \"Deposit\"})\n",
+        "fig.show()"
+      ],
+      "metadata": {
+        "id": "k0hHmdyt2umO"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "# Commentaire :\n",
+        "# L'histogramme montre que la distribution des dépôts est relativement uniforme pour tous les nombres de contacts précédents. Cependant, il y a une légère augmentation du nombre de dépôts effectués pour les clients qui ont eu un nombre élevé de contacts précédents. Cela pourrait être dû au fait que les clients qui ont eu un nombre élevé de contacts précédents sont plus susceptibles d'être intéressés par les produits et services de la banque et donc plus susceptibles d'effectuer un dépôt.\n"
+      ],
+      "metadata": {
+        "id": "4N5U-8Vo9Dpl"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Distribution de la colonne \"poutcome\" en fonction de la valeur cible \"depot\"\n",
+        "Distribution_poutcome = data.groupby('poutcome')['deposit'].value_counts().reset_index(name='count')\n",
+        "fig = px.histogram(Distribution_poutcome, x=\"poutcome\", y=\"count\", color='deposit',barmode='group')\n",
+        "fig.show()"
+      ],
+      "metadata": {
+        "id": "PoC19KaW9-8j"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "\n",
+        "# Conclusion\n",
+        "\n",
+        "Sur la base de l'analyse de l'ensemble de données fourni, plusieurs informations clés peuvent être tirées concernant les facteurs influençant les dépôts des clients :\n",
+        "\n",
+        "1. **Âge :** Les clients plus jeunes (18-25 ans) sont plus représentés dans l'ensemble de données que les clients plus âgés (65 ans et plus). Cependant, la majorité des clients de tous âges n’ont pas effectué de dépôt.\n",
+        "\n",
+        "2. **Profession :** Les clients exerçant certaines professions, telles que « gestion », « techniciens » et « cols bleus », ont une proportion de dépôts plus élevée que d'autres catégories.\n",
+        "\n",
+        "3. **Logement :** Les clients possédant un logement sont plus susceptibles de faire un dépôt que ceux qui n'en ont pas. Cela suggère que la stabilité du logement peut être un facteur contributif.\n",
+        "\n",
+        "4. **Prêt :** Les clients bénéficiant d'un prêt sont moins susceptibles d'effectuer un dépôt, probablement en raison d'obligations financières supplémentaires.\n",
+        "\n",
+        "5. **Type de contact :** Les clients contactés par téléphone portable ont plus de chances d'effectuer un dépôt, ce qui indique qu'une communication personnalisée peut être efficace.\n",
+        "\n",
+        "6. **Période du mois :** Les dépôts sont répartis relativement uniformément tout au long du mois, avec une légère augmentation vers la fin. Cela pourrait être lié au fait que les clients reçoivent leur salaire.\n",
+        "\n",
+        "7. **Période de l'année :** Semblable à la répartition mensuelle, les dépôts sont assez constants tout au long de l'année, avec une légère hausse à la fin. Cela peut être associé à des primes ou des incitations de fin d’année.\n",
+        "\n",
+        "8. **Durée de l'appel :** Les clients qui ont effectué des dépôts ont eu des durées d'appel moyennes légèrement plus longues, ce qui suggère que l'engagement et les conversations détaillées peuvent contribuer à des résultats positifs.\n",
+        "\n",
+        "9. **Nombre de contacts :** La répartition des dépôts est relativement cohérente sur différents nombres de contacts. Cependant, une légère augmentation des dépôts est observée pour les clients contactés plus fréquemment, ce qui implique qu'une communication cohérente peut être bénéfique.\n",
+        "\n",
+        "10. **Contacts précédents :** Les clients ayant un nombre plus élevé de contacts précédents ont un taux de dépôt légèrement plus élevé, ce qui indique que l'établissement de relations et le maintien de contacts peuvent influencer positivement le comportement de dépôt.\n",
+        "\n",
+        "11. **Résultat de la campagne précédente :** Les clients qui ont obtenu un résultat positif lors d'une campagne précédente (\"succès\") ont une probabilité plus élevée d'effectuer un dépôt par rapport aux autres catégories.\n",
+        "\n",
+        "Ces informations peuvent être utiles à la banque pour comprendre le comportement des clients et développer des stratégies marketing ciblées. En se concentrant sur une clientèle plus jeune, des professions spécifiques et en maintenant une communication régulière via des canaux privilégiés, la banque peut renforcer ses efforts d'acquisition de dépôts.\n",
+        "\n",
+        "Une analyse et une exploration plus approfondies de l'ensemble de données pourraient impliquer d'étudier des combinaisons de facteurs, de créer des modèles prédictifs pour identifier les déposants potentiels et de segmenter les clients en fonction de leur comportement en matière de dépôt. Cela permettrait à la banque d'adapter plus efficacement ses campagnes marketing et ses offres de produits aux différents groupes de clients."
+      ],
+      "metadata": {
+        "id": "1qB2pEaB-kMt"
+      }
+    }
+  ]
+}
