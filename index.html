@@ -1,0 +1,128 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prédicteur de Coûts d'Assurance Médicale</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lien vers votre fichier CSS personnalisé -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen flex items-center justify-center p-4">
+
+    <div class="w-full max-w-2xl bg-gray-800 rounded-3xl shadow-2xl p-8 transition-all duration-500 ease-in-out">
+
+        <!-- Page d'Accueil -->
+        <div id="accueil" class="page active flex flex-col items-center text-center">
+            <h1 class="text-4xl sm:text-5xl font-extrabold mb-6 text-indigo-400">Prédicteur de Coûts Médicaux</h1>
+            <p class="text-lg sm:text-xl text-gray-300 mb-8">
+                Utilisez cette application pour estimer les coûts potentiels d'assurance maladie en fonction de vos informations démographiques et de santé.
+            </p>
+            <p class="text-sm text-gray-500 mb-8 italic">
+            </p>
+            <button onclick="showPage('formulaire')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transform transition duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50">
+                Commencer l'estimation
+            </button>
+        </div>
+
+        <!-- Page du Formulaire -->
+        <div id="formulaire" class="page flex flex-col">
+            <h2 class="text-3xl sm:text-4xl font-bold text-center mb-8 text-indigo-400">Saisissez vos informations</h2>
+            <form id="predictionForm" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Champ Âge -->
+                    <div class="flex flex-col">
+                        <label for="age" class="text-lg font-semibold mb-2">Âge</label>
+                        <input type="number" id="age" min="18" max="100" class="p-3 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Ex: 35" required>
+                    </div>
+
+                    <!-- Champ Sexe -->
+                    <div class="flex flex-col">
+                        <label class="text-lg font-semibold mb-2">Sexe</label>
+                        <div class="flex space-x-4 pt-2">
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="sex" value="male" class="form-radio text-indigo-600 h-5 w-5" required>
+                                <span class="ml-2">Homme</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="sex" value="female" class="form-radio text-indigo-600 h-5 w-5" required>
+                                <span class="ml-2">Femme</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Champ IMC -->
+                    <div class="flex flex-col">
+                        <label for="bmi" class="text-lg font-semibold mb-2">IMC (Indice de Masse Corporelle)</label>
+                        <input type="number" id="bmi" step="0.1" min="10" max="60" class="p-3 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Ex: 26.5" required>
+                        <p class="text-xs text-gray-500 mt-1">Poids (kg) / Taille (m)²</p>
+                    </div>
+
+                    <!-- Champ Enfants -->
+                    <div class="flex flex-col">
+                        <label for="children" class="text-lg font-semibold mb-2">Nombre d'enfants</label>
+                        <input type="number" id="children" min="0" max="10" class="p-3 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Ex: 2" required>
+                    </div>
+
+                    <!-- Champ Fumeur -->
+                    <div class="flex flex-col">
+                        <label class="text-lg font-semibold mb-2">Fumeur ?</label>
+                        <div class="flex space-x-4 pt-2">
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="smoker" value="yes" class="form-radio text-indigo-600 h-5 w-5" required>
+                                <span class="ml-2">Oui</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="smoker" value="no" class="form-radio text-indigo-600 h-5 w-5" checked required>
+                                <span class="ml-2">Non</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Champ Région -->
+                    <div class="flex flex-col">
+                        <label for="region" class="text-lg font-semibold mb-2">Région (États-Unis)</label>
+                        <select id="region" class="p-3 rounded-lg bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                            <option value="southeast">Sud-Est</option>
+                            <option value="southwest">Sud-Ouest</option>
+                            <option value="northeast">Nord-Est</option>
+                            <option value="northwest">Nord-Ouest</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+
+            <div class="flex justify-center mt-8 space-x-4">
+                <button onclick="showPage('accueil')" class="bg-gray-700 hover:bg-gray-600 text-gray-200 font-bold py-3 px-6 rounded-full shadow-lg transition duration-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50">
+                    Retour
+                </button>
+                <button onclick="calculateCost()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transform transition duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50">
+                    Calculer le coût
+                </button>
+            </div>
+        </div>
+
+        <!-- Page des Résultats -->
+        <div id="resultats" class="page flex flex-col items-center text-center">
+            <h2 class="text-3xl sm:text-4xl font-bold mb-4 text-indigo-400">Coût d'assurance estimé</h2>
+            <div id="costDisplay" class="text-5xl sm:text-6xl font-extrabold text-green-400 my-6">
+                <!-- Le coût sera affiché ici -->
+            </div>
+            <div id="costExplanation" class="text-lg text-gray-300 max-w-prose mb-6 italic">
+                <!-- Explication du coût -->
+            </div>
+            <p class="text-base text-gray-400 max-w-prose mb-8">
+            </p>
+            <button onclick="showPage('formulaire')" class="bg-gray-700 hover:bg-gray-600 text-gray-200 font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50">
+                Nouveau calcul
+            </button>
+        </div>
+
+    </div>
+
+    <!-- Lien vers votre fichier JavaScript -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
